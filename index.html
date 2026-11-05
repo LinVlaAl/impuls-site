@@ -268,6 +268,9 @@
     box-shadow: 0 4px 14px rgba(21,68,109,.3); transition: background .15s ease, box-shadow .15s ease;
   }
   #ceBtn:hover { background: #eeb316; box-shadow: 0 6px 18px rgba(21,68,109,.4); }
+  /* Скрытый доступ: 3 быстрых нажатия на логотип — редактор контента,
+     3 быстрых нажатия на надпись «ИМПУЛЬС» — панель администратора. */
+  #adminBtn, #ceBtn { display: none !important; }
   #ceToolbar {
     position: fixed; left: 18px; bottom: 18px; z-index: 3001; display: none;
     background: #fff; border: 1px solid var(--line); border-radius: 14px;
@@ -5209,6 +5212,32 @@ document.addEventListener('click', function (e) {
   a.click();
   a.remove();
 });
+</script>
+<script>
+/* Скрытый доступ: 3 быстрых нажатия на логотип (левый верхний угол) — редактор контента,
+   3 быстрых нажатия на надпись «ИМПУЛЬС» — панель администратора. Плавающие кнопки убраны. */
+(function () {
+  function multiTap(el, cb, stopAlways) {
+    if (!el) return;
+    var n = 0, t = 0;
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', function (e) {
+      if (stopAlways) e.stopPropagation();
+      var now = Date.now();
+      if (now - t > 1500) n = 0;
+      t = now; n++;
+      if (n >= 3) { n = 0; if (!stopAlways) e.stopPropagation(); cb(); }
+    });
+  }
+  multiTap(document.getElementById('brandTm'), function () {
+    var b = document.getElementById('adminBtn');
+    if (b) b.click();
+  }, true);
+  multiTap(document.querySelector('.brand'), function () {
+    var b = document.getElementById('ceBtn');
+    if (b) b.click();
+  }, false);
+})();
 </script>
 </body>
 </html>
