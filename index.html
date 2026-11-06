@@ -462,6 +462,7 @@
   }
 </style>
 
+
 <style>
 /* ===== ИМПУЛЬС · дополнения сборки 2.2 ===== */
 .xs-news { background:#0a3d6b; color:#fff; border-radius:12px; padding:12px 16px; margin:0 0 14px; font-size:14px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
@@ -557,6 +558,29 @@ body.dark .xs-stock { background:#17331d; color:#8fd694; }
 body.dark .xs-news { background:#123455; }
 body.dark .xs-modal .xs-box { background:#141f2b; }
 body.dark footer.site-footer { background:#0a1118; }
+body.dark .xs-hint { color:#9fb2c4; }
+/* зебра строк таблиц (Сравнение серий и все .table-wrap) */
+body.dark tr:nth-child(even) td { background:#182531; }
+body.dark tbody tr.sel-best:hover td { background:#3f3310 !important; }
+/* статусы подбора */
+body.dark .st-ok { color:#6fd68a; }
+body.dark .st-warn { color:#ffd066; }
+body.dark .st-bad, body.dark .ci-del, body.dark .acw-err, body.dark .acw-tile.acw-hot .acw-val { color:#ff8f8f; }
+body.dark .ci-del:hover, body.dark .acw-del:hover { background:#3a1a1a; }
+/* текст карточек */
+body.dark .card p { color:#c6d3df; }
+/* чекбоксы-плитки */
+body.dark .checks label:hover, body.dark .checks label:has(input:checked) { background:#1b2938; }
+/* калькулятор ACwatt */
+body.dark .acw-net select, body.dark .acw-net input, body.dark .acw-crow input { background:#0e1620; color:#dfe7ef; border-color:#2a3b4d; }
+body.dark .acw-tile { background:#141f2b; color:#dfe7ef; border-color:#233244; }
+body.dark .acw-mini:hover { background:#1b2938; }
+/* поля панели и заблокированные поля */
+body.dark .ap-block label input { background:#0e1620; color:#dfe7ef; border-color:#2a3b4d; }
+body.dark .field input[readonly], body.dark textarea[readonly], body.dark input:disabled,
+body.dark select:disabled, body.dark .field select:disabled, body.dark .field textarea:disabled {
+  background:#101a25; color:#8ea3b5; border-style:dashed;
+}
 @media print { .xs-news, .xs-chips, #xsTheme, .xs-modal { display:none !important; } }
 
 </style>
@@ -5314,6 +5338,8 @@ document.addEventListener('click', function (e) {
   a.remove();
 });
 </script>
+
+
 
 
 <script>
