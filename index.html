@@ -461,6 +461,7 @@
     #acwReport .rnote { color:#444; font-size:9pt; margin-top:6mm; }
   }
 </style>
+
 <style>
 /* ===== ИМПУЛЬС · дополнения сборки 2.2 ===== */
 .xs-news { background:#0a3d6b; color:#fff; border-radius:12px; padding:12px 16px; margin:0 0 14px; font-size:14px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
@@ -491,22 +492,71 @@
 .xs-hint { font-size:12px; color:#5a6b7a; }
 .xs-qr { display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
 .xs-qr canvas { border:1px solid var(--line); border-radius:8px; }
-#xsTheme { background:none; border:none; cursor:pointer; font-size:15px; padding:6px 10px; color:var(--accent); }
+#xsTheme { background:none; border:none; cursor:pointer; font-size:15px; padding:6px 10px; color:var(--accent); font: inherit; font-size:15px; }
 /* тёмная тема */
 body.dark { color-scheme:dark; background:#0e1620; color:#dfe7ef; }
-body.dark .site-header { background:#101a25; box-shadow:0 1px 0 #1c2a39; }
-body.dark .tm, body.dark .tm-sub, body.dark .nav-link { color:#dfe7ef; }
-body.dark .nav-link:hover { color:#ffc11e; }
-body.dark .site-page, body.dark .section, body.dark .card, body.dark .stat, body.dark .field,
-body.dark .series-block, body.dark .xs-card, body.dark .xs-chip, body.dark .xs-modal .xs-box,
-body.dark .xs-variant { background:#141f2b; color:#dfe7ef; border-color:#233244; }
-body.dark .xs-chip:hover, body.dark .xs-compare-grid label:hover { background:#1b2938; }
-body.dark h1, body.dark h2, body.dark h3, body.dark .page-title, body.dark .lead { color:#eaf1f8; }
+body.dark {
+  --bg:#0e1620; --card:#141f2b; --text:#dfe7ef; --muted:#9fb2c4; --line:#233244; --soft:#1b2938;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.45); --shadow-md:0 6px 24px rgba(0,0,0,.55);
+}
+body.dark .site-header { background:#101a25; box-shadow:0 1px 0 #1c2a39, 0 4px 18px rgba(0,0,0,.4); }
+/* заголовки и акцентные тексты, бывшие тёмно-синими */
+body.dark .brand .tm, body.dark .card h3, body.dark .series-block h2, body.dark .section > h2,
+body.dark .requisites b, body.dark .requisites a, body.dark .contact-grid .card b,
+body.dark .ap-head, body.dark .ap-title, body.dark .cart-modal h3, body.dark .cart-item b, body.dark .cart-total,
+body.dark .xs-chips .lbl, body.dark .xs-card h3, body.dark .xs-modal .xs-box h3,
+body.dark .sub, body.dark #apStatus, body.dark #ceToolbar .ce-head { color:#cfe3f5; }
+body.dark nav.main-nav a { color:#dfe7ef; }
+body.dark nav.main-nav a:hover { color:#ffc11e; }
+body.dark nav.main-nav a.active { color:#fff; }
+body.dark #xsTheme { color:#dfe7ef; }
+body.dark .page-title, body.dark h1 { color:#eaf2fa; }
+body.dark h2, body.dark h3 { color:#cfe3f5; }
+/* ссылки в контенте */
+body.dark a:not(.btn):not(.btn-yellow):not(.btn-ghost):not(.btn-outline):not(.nav-link):not(.btn-outline) { color:#9fc9ee; }
+/* кнопки */
+body.dark .btn-outline { background:#1b2938; color:#dfe7ef; border-color:#5e88b5; }
+body.dark .btn-outline:hover { background:#223243; }
+body.dark .add-cart-btn { background:#1b2938; color:#dfe7ef; border-color:#5e88b5; }
+/* поля ввода */
 body.dark input, body.dark select, body.dark textarea { background:#0e1620; color:#dfe7ef; border-color:#2a3b4d; }
-body.dark .table-wrap table td, body.dark .xs-out td, body.dark .xs-out th { border-color:#233244; background:#141f2b; color:#dfe7ef; }
-body.dark footer.site-footer { background:#0a1118; }
-body.dark .xs-news { background:#123455; }
+body.dark .field input:focus, body.dark .field textarea:focus, body.dark .field select:focus {
+  background:#0e1620; border-color:#5e88b5; box-shadow:0 0 0 3px rgba(127,179,232,.18);
+}
+body.dark input[readonly], body.dark textarea[readonly], body.dark select[disabled],
+body.dark input:disabled, body.dark select:disabled, body.dark textarea:disabled,
+body.dark .field input[readonly] { background:#101a25; color:#8ea3b5; border-style:dashed; }
+body.dark input[type="checkbox"], body.dark input[type="radio"] { accent-color:#ffc11e; }
+/* таблицы */
+body.dark table { background: transparent; }
+body.dark th { background:#1d3a5f; color:#eaf2fa; }
+body.dark tr.sel-best td { background:#33290f !important; color:#ffe08a; }
+body.dark tr:hover td { background:#1d2936 !important; }
+body.dark .xs-out th { background:#1b2938; color:#cfe3f5; }
+body.dark .xs-out td { background:transparent; }
+body.dark .table-wrap table td, body.dark .table-wrap table th { color:#dfe7ef; }
+/* панели, модалки, карточки */
+body.dark #adminPanel, body.dark #ceToolbar, body.dark .cart-modal,
+body.dark #optOverlay > div, body.dark .xs-card, body.dark .xs-modal .xs-box,
+body.dark .xs-variant, body.dark .series-block,
+body.dark .section, body.dark .card, body.dark .stat, body.dark .field { background:#141f2b; color:#dfe7ef; }
+body.dark .cart-item { background:#0e1620; }
+body.dark .ap-btns button:not(.ap-prim), body.dark .ap-actions button:not(.ap-prim),
+body.dark .cart-btns button:not(.prim), body.dark #ceToolbar button {
+  background:#1b2938; color:#dfe7ef; border-color:#2a3b4d;
+}
+body.dark .checks label:hover, body.dark .checks label:has(input:checked),
+body.dark .opt-grid label:hover { color:#9fc9ee; }
+body.dark .opt-grid input { color:#9fc9ee; }
+body.dark body.ce-edit [contenteditable="true"]:hover { color:#9fc9ee; }
+body.dark .warn { background:#33290f; color:#ffe9a8; }
+/* доп. элементы 2.2 */
+body.dark .xs-chip { background:#1b2938; color:#dfe7ef; }
+body.dark .xs-chip:hover, body.dark .xs-compare-grid label:hover { background:#1b2938; }
 body.dark .xs-stock { background:#17331d; color:#8fd694; }
+body.dark .xs-news { background:#123455; }
+body.dark .xs-modal .xs-box { background:#141f2b; }
+body.dark footer.site-footer { background:#0a1118; }
 @media print { .xs-news, .xs-chips, #xsTheme, .xs-modal { display:none !important; } }
 
 </style>
@@ -5264,6 +5314,8 @@ document.addEventListener('click', function (e) {
   a.remove();
 });
 </script>
+
+
 <script>
 /* ===== ИМПУЛЬС · дополнения сборки 2.2 =====
    Мастер подбора, сравнение моделей, история просмотров, QR-коды,
