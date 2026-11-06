@@ -461,6 +461,55 @@
     #acwReport .rnote { color:#444; font-size:9pt; margin-top:6mm; }
   }
 </style>
+<style>
+/* ===== ИМПУЛЬС · дополнения сборки 2.2 ===== */
+.xs-news { background:#0a3d6b; color:#fff; border-radius:12px; padding:12px 16px; margin:0 0 14px; font-size:14px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.xs-news b { color:#ffc11e; }
+.xs-news .xs-news-close { margin-left:auto; background:none; border:none; color:#fff; cursor:pointer; font-size:16px; }
+.xs-chips { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 14px; align-items:center; }
+.xs-chips .lbl { font-size:12px; color:var(--accent); font-weight:700; }
+.xs-chip { background:#eef2f6; border:1px solid var(--line); border-radius:16px; padding:4px 12px; font-size:12.5px; cursor:pointer; }
+.xs-chip:hover { background:#e2ebf3; }
+.xs-card { border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin:14px 0; background:#fff; }
+.xs-card h3 { margin:0 0 8px; color:var(--accent); font-size:16px; }
+.xs-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; }
+.xs-row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:10px; }
+.xs-out { margin-top:10px; font-size:14px; line-height:1.5; }
+.xs-out table { border-collapse:collapse; width:100%; font-size:13px; margin-top:8px; }
+.xs-out td, .xs-out th { border:1px solid var(--line); padding:5px 8px; text-align:left; }
+.xs-out th { background:#f2f6fa; }
+.xs-variant { border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin:8px 0; }
+.xs-variant .v-head { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.xs-stock { display:inline-block; background:#e6f6e6; color:#1d6b2a; border-radius:10px; padding:2px 8px; font-size:11.5px; }
+.xs-modal { position:fixed; inset:0; background:rgba(10,25,40,.55); display:none; align-items:center; justify-content:center; z-index:4000; padding:16px; }
+.xs-modal.open { display:flex; }
+.xs-modal .xs-box { background:#fff; border-radius:16px; padding:18px; max-width:620px; width:100%; max-height:86vh; overflow:auto; }
+.xs-modal .xs-box h3 { margin:0 0 10px; color:var(--accent); }
+.xs-compare-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:6px 10px; max-height:42vh; overflow:auto; font-size:13px; margin:10px 0; }
+.xs-compare-grid label { display:flex; gap:6px; align-items:center; padding:3px 5px; border-radius:8px; cursor:pointer; }
+.xs-compare-grid label:hover { background:#f2f6fa; }
+.xs-hint { font-size:12px; color:#5a6b7a; }
+.xs-qr { display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+.xs-qr canvas { border:1px solid var(--line); border-radius:8px; }
+#xsTheme { background:none; border:none; cursor:pointer; font-size:15px; padding:6px 10px; color:var(--accent); }
+/* тёмная тема */
+body.dark { color-scheme:dark; background:#0e1620; color:#dfe7ef; }
+body.dark .site-header { background:#101a25; box-shadow:0 1px 0 #1c2a39; }
+body.dark .tm, body.dark .tm-sub, body.dark .nav-link { color:#dfe7ef; }
+body.dark .nav-link:hover { color:#ffc11e; }
+body.dark .site-page, body.dark .section, body.dark .card, body.dark .stat, body.dark .field,
+body.dark .series-block, body.dark .xs-card, body.dark .xs-chip, body.dark .xs-modal .xs-box,
+body.dark .xs-variant { background:#141f2b; color:#dfe7ef; border-color:#233244; }
+body.dark .xs-chip:hover, body.dark .xs-compare-grid label:hover { background:#1b2938; }
+body.dark h1, body.dark h2, body.dark h3, body.dark .page-title, body.dark .lead { color:#eaf1f8; }
+body.dark input, body.dark select, body.dark textarea { background:#0e1620; color:#dfe7ef; border-color:#2a3b4d; }
+body.dark .table-wrap table td, body.dark .xs-out td, body.dark .xs-out th { border-color:#233244; background:#141f2b; color:#dfe7ef; }
+body.dark footer.site-footer { background:#0a1118; }
+body.dark .xs-news { background:#123455; }
+body.dark .xs-stock { background:#17331d; color:#8fd694; }
+@media print { .xs-news, .xs-chips, #xsTheme, .xs-modal { display:none !important; } }
+
+</style>
 </head>
 <body>
 
@@ -2501,9 +2550,10 @@
       return;
     }
     var c = extractContact();
+    var calcNo = (s.calcNo || 1); s.calcNo = calcNo + 1; ADMIN.save();
     var fields = {
-      TITLE: 'Опросный лист «Импульс»' + (c.project ? ' — ' + c.project : ''),
-      COMMENTS: body,
+      TITLE: 'Опросный лист «Импульс» №' + calcNo + (c.project ? ' — ' + c.project : ''),
+      COMMENTS: 'Расчёт №' + calcNo + ' от ' + new Date().toLocaleDateString('ru-RU') + '\n\n' + body,
       OPENED: 'Y',
       SOURCE_ID: 'WEB'
     };
@@ -2680,6 +2730,7 @@
       + '</style></head><body><div class="blt">'
       + '<header><div class="brand">ИМПУЛЬС · Прецизионное кондиционирование</div><div class="co">ООО «Системотехника» · ТМ «Импульс» на базе ACwatt</div></header>'
       + '<h1>' + id + '</h1>'
+      + (window.impulStockOf ? (function(){ var st = window.impulStockOf(id); return st ? '<div class="sub">Срок поставки: ' + st + '</div>' : ''; })() : '')
       + '<div class="sub">' + s.title + ' · база ACwatt ' + md.base + ' · буклет сформирован ' + t + '</div>'
       + bltPhotoHtml(md, id) + '<p style="font-size:12px;">' + s.desc + '</p>'
       + '<h2>Основные характеристики</h2><table>'
@@ -5213,6 +5264,733 @@ document.addEventListener('click', function (e) {
   a.remove();
 });
 </script>
+<script>
+/* ===== ИМПУЛЬС · дополнения сборки 2.2 =====
+   Мастер подбора, сравнение моделей, история просмотров, QR-коды,
+   экспорт спецификации корзины, подбор по расходу воздуха, расчёт электрики,
+   проверка по ASHRAE, схема размещения, сервер цен/сроков/статистики на Pi,
+   лента новостей, счётчики, тёмная тема, PWA-регистрация. */
+(function () {
+"use strict";
+
+var XS_KEY = 'impul_extras_v1';
+function xsLoad() { try { return JSON.parse(localStorage.getItem(XS_KEY) || '{}') || {}; } catch (e) { return {}; } }
+function xsSave(o) { try { localStorage.setItem(XS_KEY, JSON.stringify(o)); } catch (e) {} }
+var xs = xsLoad();
+xs.stock = xs.stock || {}; xs.serverBase = xs.serverBase || '';
+xs.newsText = xs.newsText || ''; xs.newsUntil = xs.newsUntil || '';
+
+var MODELS = [
+  { id: 'Импульс P-003 (split)', series: 'P', base: 'PodAir 003', kw: 3.5, air: 700, volt: '220' },
+  { id: 'Импульс P-007 (split)', series: 'P', base: 'PodAir 007', kw: 7.5, air: 1500, volt: '220' },
+  { id: 'Импульс P-012 (split)', series: 'P', base: 'PodAir 012', kw: 12.5, air: 2300, volt: '220' },
+  { id: 'Импульс P-003 (integrated)', series: 'P', base: 'PodAir 003i', kw: 3.5, air: 700, volt: '220' },
+  { id: 'Импульс IR-12', series: 'IR', base: 'HA 012', kw: 12.6, air: 2850, volt: '380' },
+  { id: 'Импульс IR-25', series: 'IR', base: 'HA 025', kw: 25.6, air: 5080, volt: '380' },
+  { id: 'Импульс IR-30', series: 'IR', base: 'HA 030', kw: 30.6, air: 5250, volt: '380' },
+  { id: 'Импульс IR-40', series: 'IR', base: 'HA 040', kw: 42.9, air: 8580, volt: '380' },
+  { id: 'Импульс IR-50', series: 'IR', base: 'HA 050', kw: 51.1, air: 10600, volt: '380' },
+  { id: 'Импульс IR-60', series: 'IR', base: 'HA 060', kw: 63.0, air: 11600, volt: '380' },
+  { id: 'Импульс S-05', series: 'S', base: 'BA 005', kw: 5.6, air: 2000, volt: '220' },
+  { id: 'Импульс S-07', series: 'S', base: 'BA 007', kw: 7.6, air: 2300, volt: '220' },
+  { id: 'Импульс S-12', series: 'S', base: 'BA 012', kw: 12.6, air: 3200, volt: '380' },
+  { id: 'Импульс S-17', series: 'S', base: 'BA 017', kw: 17.2, air: 5000, volt: '380' },
+  { id: 'Импульс S-20', series: 'S', base: 'BA 020', kw: 20.5, air: 5500, volt: '380' },
+  { id: 'Импульс L-25', series: 'L', base: 'MA 025', kw: 27.1, air: 8550, volt: '380' },
+  { id: 'Импульс L-30', series: 'L', base: 'MA 030', kw: 30.6, air: 9550, volt: '380' },
+  { id: 'Импульс L-35', series: 'L', base: 'MA 035', kw: 36.3, air: 11100, volt: '380' },
+  { id: 'Импульс L-40', series: 'L', base: 'MA 040', kw: 41.2, air: 12100, volt: '380' },
+  { id: 'Импульс L-45', series: 'L', base: 'MA 045', kw: 45.3, air: 12550, volt: '380' },
+  { id: 'Импульс L-50', series: 'L', base: 'MA 050', kw: 51.2, air: 13100, volt: '380' },
+  { id: 'Импульс L-60', series: 'L', base: 'MA 060', kw: 60.2, air: 14000, volt: '380' },
+  { id: 'Импульс L-65 (2 сист.)', series: 'L', base: 'MA 065', kw: 65.1, air: 18800, volt: '380' },
+  { id: 'Импульс L-70 (2 сист.)', series: 'L', base: 'MA 070', kw: 71.1, air: 21500, volt: '380' },
+  { id: 'Импульс L-80 (2 сист.)', series: 'L', base: 'MA 080', kw: 83.6, air: 23500, volt: '380' },
+  { id: 'Импульс L-90 (2 сист.)', series: 'L', base: 'MA 090', kw: 92.1, air: 25500, volt: '380' },
+  { id: 'Импульс L-100 (2 сист.)', series: 'L', base: 'MA 100', kw: 100.9, air: 27500, volt: '380' },
+  { id: 'Импульс L-110 (2 сист.)', series: 'L', base: 'MA 110', kw: 110.6, air: 30000, volt: '380' },
+  { id: 'Импульс L-120 (2 сист.)', series: 'L', base: 'MA 120', kw: 120.1, air: 32000, volt: '380' }
+];
+var X = {"P-003 (split)": {"dims": "483×750×175 (4U)", "mass": "22"}, "P-007 (split)": {"dims": "483×750×353 (8U)", "mass": "38"}, "P-012 (split)": {"dims": "483×800×442 (10U)", "mass": "47"}, "P-003 (integ.)": {"dims": "440×900×355 (8U)", "mass": "45"}, "IR-12": {"cable": "5×4", "dims": "300×1200×2000", "mass": "200 / 190"}, "IR-25": {"cable": "5×6 или 5×10", "dims": "300×1200×2000", "mass": "225 / 215"}, "IR-30": {"dims": "300×1200×2000", "mass": "235 / 225"}, "IR-40": {"dims": "600×1200×2000", "mass": "305 / 195*"}, "IR-50": {"dims": "600×1200×2000", "mass": "335 / 325"}, "IR-60": {"dims": "600×1200×2000", "mass": "350 / 340"}, "S-05": {"cable": "3×4 / 3×1,5", "dims": "520×420×1748", "mass": "60 / 60"}, "S-07": {"cable": "3×4 / 3×1,5", "dims": "520×420×1748", "mass": "64 / 80*"}, "S-12": {"cable": "5×4 / 3×1,5", "dims": "600×520×1798", "mass": "99 / 99"}, "S-17": {"cable": "5×4 / 3×1,5", "dims": "700×700×1898", "mass": "120 / 120"}, "S-20": {"cable": "5×4 / 3×1,5", "dims": "700×700×1898", "mass": "128 / 128"}, "L-25": {"cable": "5×6,0", "dims": "900×995×1975", "mass": "320"}, "L-30": {"cable": "5×6,0", "dims": "900×995×1975", "mass": "325"}, "L-35": {"cable": "5×10,0", "dims": "900×995×1975", "mass": "350"}, "L-40": {"cable": "5×10,0", "dims": "900×995×1975", "mass": "370"}, "L-45": {"cable": "5×10,0", "dims": "900×995×1975", "mass": "370"}, "L-50": {"cable": "5×10,0", "dims": "1100×995×1975", "mass": "470"}, "L-120 (2 сист.)": {"cable": "5×16,0", "dims": "2200×995×1975", "mass": "185×2"}, "L-60": {"dims": "1100×995×1975", "mass": "470"}, "L-65 (2 сист.)": {"dims": "1800×995×1975", "mass": "220"}, "L-70 (2 сист.)": {"dims": "1800×995×1975", "mass": "140×2"}, "L-80 (2 сист.)": {"dims": "2200×995×1975", "mass": "150×2"}, "L-90 (2 сист.)": {"dims": "2200×995×1975", "mass": "166×2"}, "L-100 (2 сист.)": {"dims": "2200×995×1975", "mass": "166×2"}, "L-110 (2 сист.)": {"dims": "2200×995×1975", "mass": "176×2"}}; /* габариты/масса/шум из каталога — подставляется при сборке */
+
+function shortId(id) { return id.replace(/^Импульс\s+/, '').replace('(integrated)', '(integ.)').replace(/ \(HA\d+\)/, '').trim(); }
+function specOf(id) { return X[shortId(id)] || {}; }
+
+function adminState() { try { return JSON.parse(localStorage.getItem('impul_site_admin_v1') || '{}') || {}; } catch (e) { return {}; } }
+function priceOf(id) {
+  var s = adminState(); var p = (SERVER && SERVER.prices) || s.prices || {};
+  return (p[id] != null) ? p[id] : null;
+}
+function stockOf(anyId) {
+  var s = String(anyId).replace(/^Импульс\s+/, '').replace('(integrated)', '(integ.)').replace(/ \(HA\d+\)/, '').trim();
+  return ((SERVER && SERVER.stock) || {})[s] || xs.stock[s] || '';
+}
+window.impulStockOf = stockOf;
+
+/* ---------- Сервер данных на Pi ---------- */
+var SERVER = null;
+var SV_CACHE = 'impul_server_all_v1';
+function serverBase() {
+  if (xs.serverBase) return xs.serverBase;
+  if (location.protocol === 'file:') return 'http://lva.local:8082';
+  return '';
+}
+function apiURL(path) { var b = serverBase(); return (b ? b.replace(/\/+$/, '') + path : path); }
+function fetchJSON(url, opts, timeoutMs) {
+  return new Promise(function (res) {
+    var done = false;
+    var ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var t = setTimeout(function () { if (!done) { done = true; if (ctl) ctl.abort(); res(null); } }, timeoutMs || 2500);
+    var o = opts || {}; if (ctl) { o.signal = ctl.signal; }
+    fetch(url, o).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { if (!done) { done = true; clearTimeout(t); res(j); } })
+      .catch(function () { if (!done) { done = true; clearTimeout(t); res(null); } });
+  });
+}
+function syncServer() {
+  return fetchJSON(apiURL('/api/all'), null, 2500).then(function (j) {
+    if (j && (j.prices || j.stock)) {
+      SERVER = j;
+      try { localStorage.setItem(SV_CACHE, JSON.stringify(j)); } catch (e) {}
+    } else {
+      try { SERVER = JSON.parse(localStorage.getItem(SV_CACHE) || 'null'); } catch (e) { SERVER = null; }
+    }
+    return SERVER;
+  });
+}
+function track(ev, model) {
+  try {
+    fetch(apiURL('/api/track'), { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ev: ev, model: model || '', page: location.pathname, ts: Date.now() }), keepalive: true }).catch(function () {});
+  } catch (e) {}
+}
+
+/* ---------- Утилиты ---------- */
+function esc(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function fmtRub(v) { return String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽'; }
+function byId(id) { return document.getElementById(id); }
+function mkCard(title, bodyHtml) {
+  var d = document.createElement('div');
+  d.className = 'xs-card';
+  d.innerHTML = '<h3>' + title + '</h3>' + bodyHtml;
+  return d;
+}
+
+/* ---------- 1. Мастер подбора ---------- */
+function pickVariants(load, placement, red) {
+  var series = placement === 'rack' ? ['P'] : (placement === 'row' ? ['IR'] : ['S', 'L']);
+  var need = Math.max(0.1, load);
+  var out = [];
+  MODELS.forEach(function (m) {
+    if (series.indexOf(m.series) < 0) return;
+    var blocks;
+    if (red === '2N') blocks = 2 * Math.ceil(need / m.kw - 1e-9);
+    else blocks = Math.ceil(need / m.kw - 1e-9) + (red === 'N+1' ? 1 : 0);
+    if (blocks < 1) blocks = 1;
+    var total = blocks * m.kw;
+    var over = (total - need) / need * 100;
+    out.push({ model: m, blocks: blocks, total: Math.round(total * 10) / 10, over: Math.round(over) });
+  });
+  out.sort(function (a, b) { return a.over - b.over || a.blocks - b.blocks; });
+  return out.slice(0, 3);
+}
+function masterRun() {
+  var load = parseFloat(byId('xsMasterLoad').value.replace(',', '.'));
+  var placement = byId('xsMasterPlace').value;
+  var red = byId('xsMasterRed').value;
+  var out = byId('xsMasterOut');
+  if (!(load > 0)) { out.innerHTML = '<p class="xs-hint">Укажите тепловую нагрузку, кВт.</p>'; return; }
+  if (placement === 'rack' && load > 60) { out.innerHTML = '<p class="xs-hint">Для стойки больше 60 кВт используйте межрядные блоки (IR) — смените размещение.</p>'; return; }
+  var vs = pickVariants(load, placement, red);
+  var rows = vs.map(function (v, i) {
+    var m = v.model; var p = priceOf(m.id); var st = stockOf(m.id);
+    var price = p != null ? fmtRub(p) + ' за блок • Σ ' + fmtRub(p * v.blocks) : 'цена не задана';
+    return '<div class="xs-variant"><div class="v-head"><b>' + esc(m.id) + ' × ' + v.blocks + '</b>' +
+      (st ? '<span class="xs-stock">' + esc(st) + '</span>' : '') +
+      ' <button type="button" class="xs-qrbtn btn btn-ghost" data-qr="' + esc(shortId(m.id)) + '" style="padding:3px 10px;font-size:12px;">QR</button></div>' +
+      '<div>' + esc(m.base) + ' • ' + m.kw.toFixed(1) + ' кВт явных × ' + v.blocks + ' = ' + v.total + ' кВт • питание ' + esc(m.volt) + ' В • излишек ' + v.over + ' %</div>' +
+      '<div>' + price + '</div></div>';
+  }).join('');
+  out.innerHTML = '<div class="xs-out"><p>Варианты (явная мощность, резерв: ' + esc(red) + '):</p>' + rows +
+    '<p class="xs-hint">Расчёт оценочный (SHR ≈ 1,0 для ИТ-нагрузки). Для точного подбора с влажностной нагрузкой заполните форму ниже.</p></div>';
+  out.querySelectorAll('[data-qr]').forEach(function (b) {
+    b.addEventListener('click', function () { qrShow(b.getAttribute('data-qr')); });
+  });
+  track('master', load + '|' + placement + '|' + red);
+}
+function masterPrefill(m, load, red) {
+  var sp = byId('selPlacement'), sl = byId('selLoad'), sr = byId('selRed'), ss = byId('selShr');
+  if (sp) sp.value = (m === 'rack') ? 'rack' : (m === 'row' ? 'row' : 'room');
+  if (sl) sl.value = String(load);
+  if (sr) sr.value = red;
+  if (ss) ss.value = '1.0';
+  var go = byId('selGo');
+  if (go) { go.click(); }
+  var pg = byId('page-select'); if (pg) { window.scrollTo({ top: pg.getBoundingClientRect().top + window.scrollY - 60, behavior: 'smooth' }); }
+}
+
+/* ---------- 2. Сравнение моделей ---------- */
+var compareSel = [];
+function compareWidget() {
+  var wrap = document.createElement('div');
+  wrap.className = 'xs-card';
+  wrap.innerHTML = '<h3>Сравнение моделей (до 4)</h3>' +
+    '<div class="xs-compare-grid">' + MODELS.map(function (m) {
+      return '<label><input type="checkbox" value="' + esc(m.id) + '"> ' + esc(shortId(m.id)) + ' · ' + m.kw.toFixed(1) + ' кВт</label>';
+    }).join('') + '</div>' +
+    '<div class="xs-row"><button type="button" class="btn btn-yellow" id="xsCompareGo">Сравнить</button>' +
+    '<button type="button" class="btn btn-outline" id="xsCompareClr">Сбросить</button>' +
+    '<span class="xs-hint">Отметьте модели — появится общая таблица характеристик.</span></div>' +
+    '<div id="xsCompareOut"></div>';
+  return wrap;
+}
+function compareRun() {
+  var boxes = document.querySelectorAll('#xsCompareWrap input:checked');
+  var ids = [];
+  boxes.forEach(function (cb) { if (ids.length < 4) ids.push(cb.value); });
+  if (ids.length < 2) { byId('xsCompareOut').innerHTML = '<p class="xs-hint">Отметьте минимум две модели.</p>'; return; }
+  var rows = ['<tr><th>Параметр</th>' + ids.map(function (id) { return '<th>' + esc(shortId(id)) + '</th>'; }).join('') + '</tr>'];
+  function r(label, fn) { rows.push('<tr><td>' + label + '</td>' + ids.map(function (id) { var m = MODELS.filter(function (x) { return x.id === id; })[0]; return '<td>' + (m ? esc(fn(m)) : '') + '</td>'; }).join('') + '</tr>'); }
+  r('База ACwatt', function (m) { return m.base; });
+  r('Явная мощность, кВт', function (m) { return m.kw.toFixed(1); });
+  r('Расход воздуха, м³/ч', function (m) { return m.air; });
+  r('Питание', function (m) { return m.volt + ' В'; });
+  r('Габариты Ш×Г×В, мм', function (m) { return specOf(m.id).dims || '—'; });
+  r('Масса, кг', function (m) { return specOf(m.id).mass || '—'; });
+  r('Шум, дБ(А)', function (m) { return specOf(m.id).noise || '—'; });
+  r('Кабель (справочно)', function (m) { return specOf(m.id).cable || '—'; });
+  r('Цена за блок', function (m) { var p = priceOf(m.id); return p != null ? fmtRub(p) : 'не задана'; });
+  r('Срок поставки', function (m) { return stockOf(m.id) || '—'; });
+  byId('xsCompareOut').innerHTML = '<div class="xs-out"><div style="overflow:auto;"><table>' + rows.join('') + '</table></div>' +
+    ids.map(function (id) { return '<button type="button" class="btn btn-ghost xs-qrbtn" data-qr="' + esc(shortId(id)) + '" style="margin:6px 6px 0 0;padding:4px 12px;font-size:12px;">QR: ' + esc(shortId(id)) + '</button>'; }).join('') + '</div>';
+  document.querySelectorAll('#xsCompareOut [data-qr]').forEach(function (b) {
+    b.addEventListener('click', function () { qrShow(b.getAttribute('data-qr')); });
+  });
+  track('compare', ids.join(','));
+}
+
+/* ---------- 3. История просмотров ---------- */
+var HKEY = 'impul_history_v1';
+function getHistory() { try { return JSON.parse(localStorage.getItem(HKEY) || '[]') || []; } catch (e) { return []; } }
+function pushHistory(id) {
+  var h = getHistory().filter(function (x) { return x !== id; });
+  h.unshift(id); h = h.slice(0, 8);
+  try { localStorage.setItem(HKEY, JSON.stringify(h)); } catch (e) {}
+  renderHistory();
+}
+function renderHistory() {
+  var h = getHistory();
+  document.querySelectorAll('.xs-history').forEach(function (c) {
+    c.innerHTML = '<span class="lbl">Недавно смотрели:</span>' + (h.length ?
+      h.map(function (id) { return '<span class="xs-chip" data-h="' + esc(id) + '">' + esc(shortId(id)) + '</span>'; }).join('') :
+      '<span class="xs-hint">пока ничего — откройте буклет модели</span>');
+    c.querySelectorAll('[data-h]').forEach(function (ch) {
+      ch.addEventListener('click', function () {
+        var id = ch.getAttribute('data-h');
+        var btn = document.querySelectorAll('.blt-btn').length ? Array.prototype.find.call(document.querySelectorAll('.blt-btn'), function (b) {
+          var td = b.closest('td'); if (!td) return false;
+          var t = (td.childNodes[0] && td.childNodes[0].textContent ? td.childNodes[0].textContent : td.textContent).trim();
+          return t === id;
+        }) : null;
+        if (btn) { btn.click(); } else { var pg = byId('page-products'); if (pg) pg.scrollIntoView({ behavior: 'smooth' }); }
+      });
+    });
+  });
+}
+
+/* ---------- 4. QR-код (офлайн, версии 1–5, уровень L) ---------- */
+var QR = (function () {
+  var EXP = [], LOG = [];
+  (function () { var x = 1; for (var i = 0; i < 255; i++) { EXP[i] = x; LOG[x] = i; x <<= 1; if (x & 0x100) x ^= 0x11d; } EXP[255] = EXP[0]; })();
+  function gmul(a, b) { if (!a || !b) return 0; return EXP[(LOG[a] + LOG[b]) % 255]; }
+  function rsGen(n) {
+    var p = [1];
+    for (var i = 0; i < n; i++) {
+      var np = new Array(p.length + 1).fill(0);
+      for (var j = p.length - 1; j >= 0; j--) { np[j + 1] ^= p[j]; np[j] ^= gmul(p[j], EXP[i]); }
+      p = np;
+    }
+    return p;
+  }
+  function rsEcc(data, n) {
+    var g = rsGen(n).reverse(), res = new Array(n).fill(0);
+    data.forEach(function (b) {
+      var f = b ^ res[0];
+      res.shift(); res.push(0);
+      if (f) for (var i = 0; i < n; i++) res[i] ^= gmul(g[i + 1], f);
+    });
+    return res;
+  }
+  var SZ = [21, 25, 29, 33, 37], DATA = [19, 34, 55, 80, 108], AL = [null, [6, 18], [6, 22], [6, 26], [6, 30]];
+  function fmtBits(d) {
+    var g = d;
+    for (var i = 0; i < 10; i++) { g = (g << 1) ^ ((g >> 9) * 0x537); }
+    return ((d << 10) | (g & 0x3FF)) ^ 0x5412;
+  }
+  function encode(text) {
+    var bytes = [];
+    for (var i = 0; i < text.length; i++) {
+      var c = text.charCodeAt(i);
+      if (c > 255) { c = text.codePointAt(i); if (c > 0xFFFF) i++; }
+      if (c > 255) throw new Error('QR: только латиница/символы ASCII');
+      bytes.push(c);
+    }
+    var v = -1;
+    for (var k = 0; k < 5; k++) if (bytes.length <= DATA[k] - 2) { v = k; break; }
+    if (v < 0) throw new Error('QR: строка слишком длинная (макс. 106 символов)');
+    var size = SZ[v], data = DATA[v];
+    var bits = [];
+    function push(val, n) { for (var b = n - 1; b >= 0; b--) bits.push((val >> b) & 1); }
+    push(4, 4); push(bytes.length, 8);
+    bytes.forEach(function (b) { push(b, 8); });
+    var cap = data * 8;
+    if (bits.length + 4 <= cap) push(0, 4);
+    while (bits.length % 8) bits.push(0);
+    var pad = [0xEC, 0x11], pi = 0;
+    while (bits.length < cap) push(pad[pi++ % 2], 8);
+    var cw = [];
+    for (i = 0; i < data; i++) { var by = 0; for (var j = 0; j < 8; j++) by = (by << 1) | bits[i * 8 + j]; cw.push(by); }
+    /* EC-кодовые слова: v1..v5 = 7, 10, 15, 20, 26 */
+    var eccN = [7, 10, 15, 20, 26][v];
+    var ecc = rsEcc(cw, eccN);
+    var all = cw.concat(ecc);
+    var total = data + eccN;
+    /* остаточные биты */
+    var remBits = (v === 0) ? 0 : 7;
+    /* пусто: остаточные биты 0 по умолчанию */
+    var m = []; for (var r = 0; r < size; r++) { m.push(new Array(size).fill(0)); }
+    var fn = []; for (r = 0; r < size; r++) { fn.push(new Array(size).fill(false)); }
+    function setF(r, c, val) { if (r >= 0 && r < size && c >= 0 && c < size) { m[r][c] = val ? 1 : 0; fn[r][c] = true; } }
+    function finder(r, c) {
+      for (var dr = -1; dr <= 7; dr++) for (var dc = -1; dc <= 7; dc++) {
+        var rr = r + dr, cc = c + dc;
+        var dark = (dr >= 0 && dr <= 6 && (dc === 0 || dc === 6)) || (dc >= 0 && dc <= 6 && (dr === 0 || dr === 6)) || (dr >= 2 && dr <= 4 && dc >= 2 && dc <= 4);
+        setF(rr, cc, dark);
+      }
+    }
+    finder(0, 0); finder(0, size - 7); finder(size - 7, 0);
+    for (i = 8; i < size - 8; i++) { var t = (i % 2) ? 0 : 1; setF(6, i, t); setF(i, 6, t); }
+    setF(size - 8, 8, true);
+    if (AL[v]) AL[v].forEach(function (rr) { AL[v].forEach(function (cc) {
+      if ((rr <= 8 && cc <= 8) || (rr <= 8 && cc >= size - 9) || (rr >= size - 9 && cc <= 8)) return;
+      for (var dr = -2; dr <= 2; dr++) for (var dc = -2; dc <= 2; dc++) {
+        var dark = Math.max(Math.abs(dr), Math.abs(dc)) !== 1;
+        setF(rr + dr, cc + dc, dark);
+      }
+    }); });
+    /* формат: L (01) + маска 0 — ДО размещения данных, чтобы исключить ячейки из потока */
+    var fb = fmtBits((1 << 3) | 0);
+    function setFmt(rr, cc, val) { setF(rr, cc, val); }
+    for (i = 0; i <= 5; i++) setFmt(i, 8, (fb >> i) & 1);
+    setFmt(7, 8, (fb >> 6) & 1);
+    setFmt(8, 8, (fb >> 7) & 1);
+    setFmt(8, 7, (fb >> 8) & 1);
+    for (i = 9; i < 15; i++) setFmt(8, 14 - i, (fb >> i) & 1);
+    for (i = 0; i < 8; i++) setFmt(8, size - 1 - i, (fb >> i) & 1);
+    for (i = 8; i < 15; i++) setFmt(size - 15 + i, 8, (fb >> i) & 1);
+    /* данные + маска 0 */
+    var bi = 0;
+    function nextBit() { return bi < all.length * 8 ? ((all[bi >> 3] >> (7 - (bi & 7))) & 1) : 0; }
+    for (var right = size - 1; right >= 1; right -= 2) {
+      if (right === 6) right = 5;
+      for (var vert = 0; vert < size; vert++) {
+        for (var jj = 0; jj < 2; jj++) {
+          var xx = right - jj;
+          var upward = ((right + 1) & 2) === 0;
+          var yy = upward ? size - 1 - vert : vert;
+          if (!fn[yy][xx]) {
+            var b = nextBit(); bi++;
+            if ((yy + xx) % 2 === 0) b ^= 1;
+            m[yy][xx] = b;
+          }
+        }
+      }
+    }
+    /* формат уже нарисован выше (до данных) */
+    return m;
+  }
+  return { encode: encode };
+})();
+function qrShow(short) {
+  var url = location.href.split('#')[0] + '#' + encodeURIComponent(short);
+  var ov = byId('xsQrModal');
+  byId('xsQrBody').innerHTML = '<h3>QR: ' + esc(short) + '</h3><div class="xs-qr"><div id="xsQrBox"></div>' +
+    '<div><p class="xs-hint" style="max-width:280px;">Ссылка на эту страницу с моделью. Сохраните картинку или отсканируйте с экрана.</p>' +
+    '<button type="button" class="btn btn-outline" id="xsQrDl">Скачать PNG</button></div></div>';
+  var cv = document.createElement('canvas');
+  var m = QR.encode(url);
+  var px = Math.max(4, Math.floor(240 / m.length) + 1), q = 4;
+  cv.width = (m.length + 2 * q) * px; cv.height = cv.width;
+  var ctx = cv.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.fillStyle = '#000';
+  for (var r = 0; r < m.length; r++) for (var c = 0; c < m.length; c++) if (m[r][c]) ctx.fillRect((c + q) * px, (r + q) * px, px, px);
+  byId('xsQrBox').appendChild(cv);
+  byId('xsQrDl').onclick = function () {
+    var a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = 'qr-' + short + '.png'; a.click();
+  };
+  ov.classList.add('open');
+}
+
+/* ---------- 5. Экспорт спецификации из корзины ---------- */
+function cartRead() { try { return JSON.parse(localStorage.getItem('impul_site_cart_v1') || '[]') || []; } catch (e) { return []; } }
+function cartCsv() {
+  var cart = cartRead();
+  if (!cart.length) { alert('Корзина пуста'); return; }
+  var rows = [['Модель', 'База', 'Мощность, кВт', 'Расход воздуха, м³/ч', 'Питание, В', 'Кол-во', 'Цена за шт, ₽', 'Сумма, ₽', 'Опции']];
+  var tot = 0;
+  cart.forEach(function (it) {
+    var p = priceOf(it.id);
+    var sum = (p != null ? p * it.units : 0); tot += sum;
+    rows.push([it.id, it.base, it.kw.toFixed(1), it.airFlow || '', it.volt, String(it.units), p != null ? String(Math.round(p)) : '', String(Math.round(sum)), (it.opts || []).join('; ')]);
+  });
+  rows.push(['', '', '', '', '', '', '', String(Math.round(tot)), '']);
+  var csv = '\uFEFF' + rows.map(function (r) { return r.map(function (c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(';'); }).join('\r\n');
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = 'impul_spec_' + new Date().toISOString().slice(0, 10) + '.csv'; a.click();
+  track('export', String(cart.length));
+}
+
+/* ---------- 6. Подбор по расходу воздуха ---------- */
+function airRun() {
+  var q = parseFloat(byId('xsAirQ').value.replace(',', '.'));
+  var out = byId('xsAirOut');
+  if (!(q > 0)) { out.innerHTML = '<p class="xs-hint">Укажите расход воздуха, м³/ч.</p>'; return; }
+  var list = MODELS.filter(function (m) { return m.air >= q; }).sort(function (a, b) { return a.air - b.air; }).slice(0, 5);
+  out.innerHTML = '<div class="xs-out"><table><tr><th>Модель</th><th>Расход, м³/ч</th><th>кВт</th><th>Цена</th><th>Срок</th></tr>' +
+    list.map(function (m) {
+      return '<tr><td>' + esc(m.id) + '</td><td>' + m.air + '</td><td>' + m.kw.toFixed(1) + '</td><td>' + (priceOf(m.id) != null ? fmtRub(priceOf(m.id)) : '—') + '</td><td>' + esc(stockOf(m.id) || '—') + '</td></tr>';
+    }).join('') + '</table>' +
+    '<p class="xs-hint">Дальше — по свободному статическому давлению сети и диаграммам производительности (уточняется у поставщика).</p></div>';
+}
+
+/* ---------- 7. Электрика ---------- */
+function calcElecCalc(p, volt, len) {
+  var I = volt === 380 ? p * 1000 / (Math.sqrt(3) * 380 * 0.95) : p * 1000 / (220 * 0.98);
+  I = Math.ceil(I * 10) / 10;
+  var tab = [[1.5, 16], [2.5, 25], [4, 32], [6, 40], [10, 63], [16, 80], [25, 100], [35, 125]];
+  var sec = '—', brk = '—', dU = '—';
+  for (var i = 0; i < tab.length; i++) if (tab[i][1] >= I) { sec = tab[i][0]; break; }
+  var std = [6, 10, 16, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160];
+  for (i = 0; i < std.length; i++) if (std[i] >= I) { brk = std[i]; break; }
+  if (sec !== '—') {
+    var dUv = volt === 380 ? 100 * Math.sqrt(3) * I * 0.0175 * len / (sec * 380) : 100 * 2 * I * 0.0175 * len / (sec * 220);
+    dU = Math.round(dUv * 10) / 10 + ' %';
+  }
+  return { i: I, sec: sec, brk: brk, dU: dU };
+}
+function elecRun() {
+  var p = parseFloat(byId('xsElP').value.replace(',', '.'));
+  var volt = parseInt(byId('xsElV').value, 10);
+  var len = parseFloat(byId('xsElL').value.replace(',', '.')) || 0;
+  var out = byId('xsElOut');
+  if (!(p > 0)) { out.innerHTML = '<p class="xs-hint">Укажите электрическую мощность, кВт.</p>'; return; }
+  var r = calcElecCalc(p, volt, len);
+  var r = calcElecCalc(p, volt, len);
+  out.innerHTML = '<div class="xs-out"><table><tr><th>Ток</th><th>Кабель Cu, мм²</th><th>Автомат, А</th><th>Падение напряжения</th></tr>' +
+    '<tr><td><b>' + r.i + ' А</b></td><td><b>' + r.sec + '</b></td><td><b>' + r.brk + '</b></td><td>' + r.dU + ' (при ' + len + ' м)</td></tr></table>' +
+    '<p class="xs-hint">Оценочно: cos φ = 0,95 (380 В) / 0,98 (220 В), медь, способ прокладки не учтён, падение ≤ 5 %. Окончательно — проект электроснабжения.</p></div>';
+}
+
+/* ---------- 8. Проверка по ASHRAE ---------- */
+var ASH = { 'A1': [15, 32, 8, 80], 'A2': [10, 35, 8, 80], 'A3': [5, 40, 8, 85], 'A4': [5, 45, 8, 90] };
+function ashRun() {
+  var t = parseFloat(byId('xsAshT').value.replace(',', '.'));
+  var h = parseFloat(byId('xsAshH').value.replace(',', '.'));
+  var out = byId('xsAshOut');
+  if (isNaN(t) || isNaN(h)) { out.innerHTML = '<p class="xs-hint">Укажите температуру и влажность.</p>'; return; }
+  var ok = [];
+  Object.keys(ASH).forEach(function (k) { var a = ASH[k]; if (t >= a[0] && t <= a[1] && h >= a[2] && h <= a[3]) ok.push(k); });
+  out.innerHTML = '<div class="xs-out"><table><tr><th>Класс</th><th>t°, °C (доп.)</th><th>RH, %</th><th>Вердикт</th></tr>' +
+    Object.keys(ASH).map(function (k) { var a = ASH[k]; return '<tr><td><b>' + k + '</b></td><td>' + a[0] + '…' + a[1] + '</td><td>' + a[2] + '–' + a[3] + '</td><td>' + (ok.indexOf(k) >= 0 ? '<b>подходит</b>' : 'не подходит') + '</td></tr>'; }).join('') +
+    '</table><p>' + (ok.length ? 'Условия соответствуют ' + ok.join(', ') + '. Минимальный подходящий класс: <b>' + ok[0] + '</b>.' : 'Условия выходят за доп. диапазоны всех классов A1–A4 — вне допусков ASHRAE TC 9.9.') + '</p>' +
+    '<p class="xs-hint">По ASHRAE TC 9.9 (Thermal Guidelines, 5-е изд.): доп. диапазоны краткосрочной эксплуатации. Рекомендуемые рабочие — уже.</p></div>';
+}
+
+/* ---------- 9. Схема размещения ---------- */
+function layoutRun() {
+  var w = parseFloat(byId('xsLwW').value.replace(',', '.'));
+  var d = parseFloat(byId('xsLwD').value.replace(',', '.'));
+  var n = parseInt(byId('xsLwN').value, 10) || 1;
+  var bw = byId('xsLwBw').value === '600' ? 0.6 : 0.3;
+  var two = byId('xsLwTwo').value === 'two';
+  var out = byId('xsLwOut');
+  if (!(w > 0 && d > 0)) { out.innerHTML = '<p class="xs-hint">Укажите размеры зала.</p>'; return; }
+  var cv = document.createElement('canvas');
+  cv.width = 660; cv.height = 420;
+  var ctx = cv.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height);
+  var sc = Math.min(560 / w, 320 / d);
+  var ox = (cv.width - w * sc) / 2, oy = 30 + (cv.height - 60 - d * sc) / 2;
+  ctx.strokeStyle = '#0a3d6b'; ctx.lineWidth = 3; ctx.strokeRect(ox, oy, w * sc, d * sc);
+  if (two) {
+    var aisleH = Math.min(d * sc * 0.4, 90);
+    var ay = oy + d * sc - aisleH;
+    ctx.fillStyle = 'rgba(60,140,220,.25)'; ctx.fillRect(ox, ay, w * sc, aisleH);
+    ctx.fillStyle = '#0a3d6b'; ctx.font = '12px Arial'; ctx.fillText('холодный коридор', ox + 8, ay - 6);
+    var perRow = Math.max(1, Math.ceil(n / 2));
+    for (var i = 0; i < n; i++) {
+      var row = i < perRow ? 0 : 1;
+      var idx = row === 0 ? i : i - perRow;
+      var bwpx = bw * sc;
+      var gap = (w * sc - perRow * bwpx) / (perRow + 1);
+      var bx = ox + gap + idx * (bwpx + gap);
+      var by = row === 0 ? oy + 4 : ay + aisleH - 4 - 30;
+      ctx.fillStyle = '#15446d'; ctx.fillRect(bx, by, bwpx, 30);
+      ctx.fillStyle = '#fff'; ctx.font = '10px Arial';
+      ctx.fillText('IR', bx + bwpx / 2 - 6, by + 19);
+    }
+  } else {
+    var bwpx2 = bw * sc;
+    var gap2 = Math.max(4, (w * sc - n * bwpx2) / (n + 1));
+    for (i = 0; i < n; i++) {
+      var bx2 = ox + gap2 + i * (bwpx2 + gap2);
+      ctx.fillStyle = '#15446d'; ctx.fillRect(bx2, oy + d * sc - 34, bwpx2, 30);
+      ctx.fillStyle = '#fff'; ctx.font = '10px Arial'; ctx.fillText('IR', bx2 + bwpx2 / 2 - 6, oy + d * sc - 15);
+      ctx.fillStyle = 'rgba(60,140,220,.2)'; ctx.fillRect(bx2, oy, bwpx2, d * sc - 34);
+    }
+  }
+  ctx.fillStyle = '#0a3d6b'; ctx.font = '13px Arial';
+  ctx.fillText('Зал ' + w + ' × ' + d + ' м • блоков: ' + n + ' (ширина ' + (bw === 0.6 ? '600' : '300') + ' мм' + (two ? ', два ряда' : ', один ряд') + ')', ox, oy - 8);
+  var btn = document.createElement('button');
+  btn.type = 'button'; btn.className = 'btn btn-outline'; btn.textContent = 'Скачать PNG';
+  btn.onclick = function () { var a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = 'impul_layout.png'; a.click(); };
+  out.innerHTML = '<div class="xs-out"></div>';
+  out.firstChild.appendChild(cv);
+  out.appendChild(btn);
+}
+
+/* ---------- 10. Новости/акция ---------- */
+function renderNews() {
+  var home = byId('page-home');
+  if (!home) return;
+  var old = byId('xsNewsBanner'); if (old) old.remove();
+  if (!xs.newsText) return;
+  var today = new Date().toISOString().slice(0, 10);
+  if (xs.newsUntil && xs.newsUntil < today) return;
+  var d = document.createElement('div');
+  d.className = 'xs-news'; d.id = 'xsNewsBanner';
+  d.innerHTML = '<b>📢</b><span>' + esc(xs.newsText) + '</span><button type="button" class="xs-news-close" title="Скрыть">✕</button>';
+  d.querySelector('.xs-news-close').onclick = function () { d.remove(); };
+  var lead = home.querySelector('.stat-strip') || home.querySelector('h1');
+  if (lead && lead.parentNode) lead.parentNode.insertBefore(d, lead.nextSibling);
+  else home.insertBefore(d, home.firstChild);
+}
+
+/* ---------- 11. Панель: доп. блок ---------- */
+function adminExtras() {
+  var ap = byId('adminPanel');
+  if (!ap || byId('xsServer')) return;
+  var b = document.createElement('div');
+  b.className = 'ap-block';
+  b.innerHTML = '<div class="ap-title">Дополнительно (сборка 2.2)</div>' +
+    '<label>Сервер данных (Pi)<input id="xsServer" placeholder="пусто = тот же адрес сайта (через nginx /api/)"></label>' +
+    '<label>Сроки поставки (модель=срок, одна на строку)<textarea id="xsStock" rows="3" placeholder="IR-40=3–4 недели&#10;S-12=в наличии"></textarea></label>' +
+    '<label>Новость / акция на главной<input id="xsNews" placeholder="до 30.11 — специальная цена на серию S"></label>' +
+    '<label>Новость действует до<input id="xsNewsUntil" type="date"></label>' +
+    '<div class="ap-btns"><button type="button" id="xsSave" class="ap-prim">Применить</button>' +
+    '<button type="button" id="xsSync" class="ap-prim">С сервера Pi → сайт</button>' +
+    '<button type="button" id="xsPush" class="ap-prim">Сайт → на сервер Pi</button>' +
+    '<button type="button" id="xsStats" class="ap-prim">Статистика</button></div>' +
+    '<p id="xsStatus" class="ap-note"></p><div id="xsStatsBox"></div>';
+  ap.appendChild(b);
+  function st(msg) { byId('xsStatus').textContent = msg; }
+  byId('xsSave').addEventListener('click', function () {
+    xs.serverBase = byId('xsServer').value.trim();
+    xs.stock = {};
+    byId('xsStock').value.split('\n').forEach(function (ln) {
+      var i = ln.indexOf('='); if (i > 0) xs.stock[ln.slice(0, i).trim()] = ln.slice(i + 1).trim();
+    });
+    xs.newsText = byId('xsNews').value.trim();
+    xs.newsUntil = byId('xsNewsUntil').value;
+    xsSave(xs); st('Сохранено локально в этом браузере.');
+  });
+  byId('xsSync').addEventListener('click', function () {
+    st('Запрашиваю сервер…');
+    syncServer().then(function (j) {
+      if (!j) { st('Сервер недоступен — использую последний кеш (если был).'); return; }
+      var inputs = document.querySelectorAll('#apPriceList .ap-price');
+      inputs.forEach(function (inp) { var k = inp.getAttribute('data-model'); if (j.prices && j.prices[k] != null) inp.value = String(j.prices[k]); });
+      xs.stock = j.stock || {}; if (j.news) { xs.newsText = j.news.text || ''; xs.newsUntil = j.news.until || ''; }
+      byId('xsStock').value = Object.keys(xs.stock).map(function (k) { return k + '=' + xs.stock[k]; }).join('\n');
+      byId('xsNews').value = xs.newsText; byId('xsNewsUntil').value = xs.newsUntil;
+      xsSave(xs);
+      var save = byId('apSave'); if (save) save.click();
+      st('Цены подставлены в панель и сохранены. Сроки: ' + Object.keys(xs.stock).length + ', новость: ' + (xs.newsText ? 'есть' : 'нет') + '.');
+      renderNews(); renderHistory();
+    });
+  });
+  byId('xsPush').addEventListener('click', function () {
+    var pw = prompt('Код доступа к серверу данных (по умолчанию 4061):');
+    if (!pw) return;
+    var prices = {};
+    document.querySelectorAll('#apPriceList .ap-price').forEach(function (inp) {
+      var v = parseFloat(inp.value); var k = inp.getAttribute('data-model');
+      if (k && !isNaN(v) && v > 0) prices[k] = v;
+    });
+    fetchJSON(apiURL('/api/all'), { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pw: pw, prices: prices, optPrices: (adminState().optPrices || {}), stock: xs.stock, news: { text: xs.newsText, until: xs.newsUntil } }) }, 4000).then(function (j) {
+      st(j && j.ok ? 'Сохранено на сервере Pi — теперь цены видны всем.' : 'Сервер недоступен или код неверный.');
+    });
+  });
+  byId('xsStats').addEventListener('click', function () {
+    syncServer().then(function () {
+      fetchJSON(apiURL('/api/stats'), null, 3000).then(function (j) {
+        if (!j) { st('Статистика недоступна (сервер не отвечает).'); return; }
+        var rows = Object.keys(j.models || {}).sort(function (a, b) { return j.models[b] - j.models[a]; }).slice(0, 12)
+          .map(function (k) { return '<tr><td>' + esc(k) + '</td><td>' + j.models[k] + '</td></tr>'; }).join('');
+        byId('xsStatsBox').innerHTML = '<p class="ap-note">Просмотры страницы: ' + (j.visits || 0) + ' • буклетов открыто: ' + (j.booklets || 0) + '</p>' +
+          (rows ? '<div style="overflow:auto;"><table class="xs-out"><tr><th>Модель</th><th>Показов</th></tr>' + rows + '</table></div>' : '');
+      });
+    });
+  });
+}
+
+/* ---------- 12. Тема ---------- */
+function initTheme() {
+  var saved = null;
+  try { saved = localStorage.getItem('impul_theme'); } catch (e) {}
+  function apply(dark) { document.body.classList.toggle('dark', dark); }
+  apply(saved === 'dark' || (saved == null && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches));
+  var nav = document.querySelector('.main-nav');
+  if (nav) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.id = 'xsTheme'; b.className = 'nav-link';
+    b.title = 'Тёмная / светлая тема';
+    function sync() { b.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙'; }
+    sync();
+    b.addEventListener('click', function () {
+      var dark = !document.body.classList.contains('dark');
+      apply(dark); try { localStorage.setItem('impul_theme', dark ? 'dark' : 'light'); } catch (e) {}
+      sync();
+    });
+    nav.appendChild(b);
+  }
+}
+
+/* ---------- 13. PWA ---------- */
+function initPwa() {
+  var m = { name: 'ИМПУЛЬС — прецизионное кондиционирование', short_name: 'ИМПУЛЬС', start_url: './', display: 'standalone', background_color: '#ffffff', theme_color: '#0a3d6b', icons: [{ src: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="36" fill="#0a3d6b"/><text x="96" y="128" font-size="84" font-family="Arial" font-weight="bold" fill="#ffc11e" text-anchor="middle">И</text></svg>'), sizes: '192x192', type: 'image/svg+xml', purpose: 'any maskable' }] };
+  var link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(m));
+  document.head.appendChild(link);
+  if (('serviceWorker' in navigator) && window.isSecureContext) {
+    try { navigator.serviceWorker.register('./sw.js').catch(function () {}); } catch (e) {}
+  }
+}
+
+/* ---------- Сборка интерфейса ---------- */
+function init() {
+  initTheme(); initPwa();
+  var sel = byId('page-select');
+  if (sel) {
+    var master = mkCard('⚡ Быстрый подбор — 3 вопроса', '' +
+      '<div class="xs-grid">' +
+      '<div class="field"><label>Тепловая нагрузка, кВт</label><input type="number" id="xsMasterLoad" step="0.5" min="0" placeholder="например, 45"></div>' +
+      '<div class="field"><label>Размещение</label><select id="xsMasterPlace"><option value="rack">В стойку 19″ (P)</option><option value="row">Межрядно (IR)</option><option value="room" selected>Помещение (S/L)</option></select></div>' +
+      '<div class="field"><label>Резервирование</label><select id="xsMasterRed"><option value="N">N</option><option value="N+1" selected>N+1</option><option value="2N">2N</option></select></div>' +
+      '</div><div class="xs-row"><button type="button" class="btn btn-yellow" id="xsMasterGo">Подобрать</button></div>' +
+      '<div id="xsMasterOut" class="xs-out"></div>');
+    sel.insertBefore(master, sel.querySelector('.section'));
+    sel.insertBefore(Object.assign(document.createElement('div'), { className: 'xs-chips xs-history', id: 'xsHistSel' }), sel.firstChild);
+    sel.insertBefore(compareWidget(), master);
+    sel.querySelector('.xs-compare-grid').parentNode.id = 'xsCompareWrap';
+    byId('xsCompareGo').addEventListener('click', compareRun);
+    byId('xsCompareClr').addEventListener('click', function () {
+      document.querySelectorAll('#xsCompareWrap input').forEach(function (cb) { cb.checked = false; });
+      byId('xsCompareOut').innerHTML = '';
+    });
+    byId('xsMasterGo').addEventListener('click', masterRun);
+  }
+  var eng = byId('page-eng');
+  if (eng) {
+    var airc = mkCard('Подбор по расходу воздуха', '' +
+      '<div class="xs-grid"><div class="field"><label>Требуемый расход, м³/ч</label><input type="number" id="xsAirQ" step="100" min="0" placeholder="например, 9000"></div></div>' +
+      '<div class="xs-row"><button type="button" class="btn btn-yellow" id="xsAirGo">Подобрать</button></div><div id="xsAirOut" class="xs-out"></div>');
+    var elc = mkCard('Электрика: ток, кабель, автомат', '' +
+      '<div class="xs-grid">' +
+      '<div class="field"><label>Электрическая мощность, кВт</label><input type="number" id="xsElP" step="0.5" min="0" placeholder="например, 15"></div>' +
+      '<div class="field"><label>Напряжение</label><select id="xsElV"><option value="380" selected>380 В (3~)</option><option value="220">220 В (1~)</option></select></div>' +
+      '<div class="field"><label>Длина кабеля, м</label><input type="number" id="xsElL" step="1" min="0" value="20"></div>' +
+      '</div><div class="xs-row"><button type="button" class="btn btn-yellow" id="xsElGo">Рассчитать</button></div><div id="xsElOut" class="xs-out"></div>');
+    var ash = mkCard('Проверка условий по ASHRAE TC 9.9', '' +
+      '<div class="xs-grid">' +
+      '<div class="field"><label>Температура, °C</label><input type="number" id="xsAshT" step="0.1" value="24"></div>' +
+      '<div class="field"><label>Влажность, % RH</label><input type="number" id="xsAshH" step="1" value="50"></div>' +
+      '</div><div class="xs-row"><button type="button" class="btn btn-yellow" id="xsAshGo">Проверить</button></div><div id="xsAshOut" class="xs-out"></div>');
+    var lay = mkCard('Схема размещения оборудования', '' +
+      '<div class="xs-grid">' +
+      '<div class="field"><label>Ширина зала, м</label><input type="number" id="xsLwW" step="0.5" min="1" value="10"></div>' +
+      '<div class="field"><label>Глубина зала, м</label><input type="number" id="xsLwD" step="0.5" min="1" value="8"></div>' +
+      '<div class="field"><label>Блоков IR</label><input type="number" id="xsLwN" step="1" min="1" max="24" value="4"></div>' +
+      '<div class="field"><label>Ширина блока</label><select id="xsLwBw"><option value="300">300 мм (IR-12…30)</option><option value="600">600 мм (IR-40…60)</option></select></div>' +
+      '<div class="field"><label>Компоновка</label><select id="xsLwTwo"><option value="one" selected>Один ряд у стены</option><option value="two">Два ряда + холодный коридор</option></select></div>' +
+      '</div><div class="xs-row"><button type="button" class="btn btn-yellow" id="xsLwGo">Построить</button></div><div id="xsLwOut" class="xs-out"></div>');
+    eng.insertBefore(airc, eng.lastChild);
+    eng.insertBefore(elc, eng.lastChild);
+    eng.insertBefore(ash, eng.lastChild);
+    eng.insertBefore(lay, eng.lastChild);
+    byId('xsAirGo').addEventListener('click', airRun);
+    byId('xsElGo').addEventListener('click', elecRun);
+    byId('xsAshGo').addEventListener('click', ashRun);
+    byId('xsLwGo').addEventListener('click', layoutRun);
+  }
+  var prod = byId('page-products');
+  if (prod) {
+    var h = document.createElement('div');
+    h.className = 'xs-chips xs-history'; h.id = 'xsHistProd';
+    prod.insertBefore(h, prod.querySelector('.section') || prod.firstChild);
+  }
+  renderHistory(); renderNews(); adminExtras();
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.blt-btn');
+    if (!b) return;
+    var td = b.closest('td'); if (!td) return;
+    var name = (td.childNodes[0] && td.childNodes[0].textContent ? td.childNodes[0].textContent : td.textContent).trim();
+    if (name) { pushHistory(name); }
+  }, true);
+  var ov = document.createElement('div');
+  ov.id = 'xsQrModal'; ov.className = 'xs-modal';
+  ov.innerHTML = '<div class="xs-box"><div class="xs-row" style="justify-content:flex-end;"><button type="button" class="btn btn-ghost" id="xsQrClose">Закрыть</button></div><div id="xsQrBody"></div></div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click', function (e) { if (e.target === ov) ov.classList.remove('open'); });
+  byId('xsQrClose').addEventListener('click', function () { ov.classList.remove('open'); });
+  var cartOv = byId('cartOverlay');
+  if (cartOv) {
+    new MutationObserver(function () {
+      if (!cartOv.classList.contains('open')) return;
+      if (byId('xsSpecBtn')) return;
+      var holder = cartOv.querySelector('.cart-modal');
+      if (!holder) return;
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'btn btn-outline'; btn.id = 'xsSpecBtn';
+      btn.textContent = 'Спецификация (CSV)';
+      btn.addEventListener('click', cartCsv);
+      holder.appendChild(btn);
+    }).observe(cartOv, { attributes: true, attributeFilter: ['class'] });
+  }
+  /* счётчик визита */
+  var seen = null;
+  try { seen = sessionStorage.getItem('impul_tracked'); } catch (e) {}
+  if (!seen) {
+    try { sessionStorage.setItem('impul_tracked', '1'); } catch (e) {}
+    syncServer().then(function () { track('visit', ''); });
+  } else { syncServer(); }
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+
+/* тест-хуки */
+window.__impulTest = {
+  pickVariants: pickVariants, calcElec: calcElecCalc, ash: ASH, qr: QR.encode, specs: X, stockOf: stockOf, priceOf: priceOf
+};
+})();
+
+</script>
+
 <script>
 /* Скрытый доступ: 3 быстрых нажатия на логотип (левый верхний угол) — редактор контента,
    3 быстрых нажатия на надпись «ИМПУЛЬС» — панель администратора. Плавающие кнопки убраны. */
