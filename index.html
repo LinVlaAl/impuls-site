@@ -2358,6 +2358,7 @@ body.dark select:disabled, body.dark .field select:disabled, body.dark .field te
   <div class="footer-in">
     <div><span id="footerTm">ИМПУЛЬС</span> • <span id="footerOrg">ООО «Системотехника»</span></div>
     <div><span data-req="addr">125239, г. Москва, ул. Коптевская, д. 73, стр. 1</span> • <a data-req="tel" href="tel:+74952550339">+7 (495) 255-03-39</a> • <a data-req="mail" href="mailto:info@sstmk.ru">info@sstmk.ru</a></div>
+    <div id="visitCounter" style="opacity:.6; font-size:11px;"></div>
     <div style="opacity:.6; font-size:11px; flex-basis:100%;">сборка 2.0 • панель под паролем • инженерные калькуляторы ×25 • корзина • цены и цены опций • Битрикс24 • N+M • сценарии применения • экспресс-подбор • центр загрузок • журнал • питание + охлаждение от ГК «Системотехника» • опросный лист выверен по XLSX-версии и листу подбора DX для ЦОД • нормативная база: СП 541.1325800.2024, ГОСТ Р 58541, ASHRAE TC 9.9 (5-е изд., 2021), ТР ТС/ТР ЕАЭС • данные по мануалам и официальным данным ACwatt</div>
   </div>
 </footer>
@@ -5870,7 +5871,8 @@ function adminExtras() {
     '<div class="ap-btns"><button type="button" id="xsSave" class="ap-prim">Применить</button>' +
     '<button type="button" id="xsSync" class="ap-prim">С сервера Pi → сайт</button>' +
     '<button type="button" id="xsPush" class="ap-prim">Сайт → на сервер Pi</button>' +
-    '<button type="button" id="xsStats" class="ap-prim">Статистика</button></div>' +
+    '<button type="button" id="xsStats" class="ap-prim">Статистика</button>' +
+    '<button type="button" id="xsVisits" class="ap-prim">Журнал посещений (IP)</button></div>' +
     '<p id="xsStatus" class="ap-note"></p><div id="xsStatsBox"></div>';
   ap.appendChild(b);
   function st(msg) { byId('xsStatus').textContent = msg; }
@@ -5921,6 +5923,25 @@ function adminExtras() {
         byId('xsStatsBox').innerHTML = '<p class="ap-note">Просмотры страницы: ' + (j.visits || 0) + ' • буклетов открыто: ' + (j.booklets || 0) + '</p>' +
           (rows ? '<div style="overflow:auto;"><table class="xs-out"><tr><th>Модель</th><th>Показов</th></tr>' + rows + '</table></div>' : '');
       });
+    });
+  });
+  byId('xsVisits').addEventListener('click', function () {
+    var pw = prompt('Код доступа к серверу данных (по умолчанию 4061):');
+    if (!pw) return;
+    st('Запрашиваю журнал посещений…');
+    fetchJSON(apiURL('/api/visits'), { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pw: pw, limit: 300 }) }, 5000).then(function (j) {
+      if (!j) { st('Сервер недоступен.'); return; }
+      if (!j.ok) { st(j.error || 'Код неверный.'); return; }
+      var list = j.visits || [];
+      var rows = list.map(function (v) {
+        var d = v.ts ? new Date(v.ts) : null;
+        var t = d ? d.toLocaleString('ru-RU') : '';
+        return '<tr><td>' + esc(t) + '</td><td>' + esc(v.ip || '—') + '</td><td>' + esc(v.ev || 'visit') + '</td><td>' + esc(v.model || v.page || '') + '</td><td>' + esc((v.ua || '').slice(0, 60)) + '</td></tr>';
+      }).join('');
+      byId('xsStatsBox').innerHTML = '<p class="ap-note">Последние посещения: показано ' + list.length + ' из ' + (j.total != null ? j.total : '?') + '. IP пишутся на сервере данных (visits.json).</p>' +
+        (rows ? '<div style="overflow:auto; max-height:420px;"><table class="xs-out"><tr><th>Время</th><th>IP</th><th>Событие</th><th>Модель / страница</th><th>Браузер</th></tr>' + rows + '</table></div>' : '<p class="ap-note">Журнал пуст.</p>');
+      st('Журнал получен.');
     });
   });
 }
@@ -6056,6 +6077,15 @@ function init() {
     try { sessionStorage.setItem('impul_tracked', '1'); } catch (e) {}
     syncServer().then(function () { track('visit', ''); });
   } else { syncServer(); }
+  updateVisitCounter();
+}
+function updateVisitCounter() {
+  try {
+    fetchJSON(apiURL('/api/stats'), null, 3000).then(function (j) {
+      var el = document.getElementById('visitCounter');
+      if (el && j) el.textContent = 'Посетителей за всё время: ' + (j.visits || 0);
+    });
+  } catch (e) {}
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
